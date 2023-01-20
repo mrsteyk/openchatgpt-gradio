@@ -57,6 +57,22 @@ if __name__ == "__main__":
     tokenizer = AutoTokenizer.from_pretrained(args.model)
     hist = []
 
+    def prune_history_gradio():
+        global hist
+        hist = prune_history(hist)
+        return hist.copy()
+    
+    def remove_last_exchange_gradio():
+        global hist
+        if len(hist) > 0:
+            hist.pop()
+        return hist.copy()
+    
+    def clear_history():
+        global hist
+        hist = []
+        return []
+
     def generate(inpt, system, user, ai, max_new_tokens):
         global model, tokenizer, hist
         query = generate_query(inpt, user, ai, system, tokenizer.sep_token, hist)
@@ -84,6 +100,8 @@ if __name__ == "__main__":
                     inpt = gr.Textbox(lines=2, placeholder="Your message", show_label=False)
                 submit = gr.Button("Send", variant="primary")
             history_prune = gr.Button("Prune history")
+            remove_last_exchange = gr.Button("Remove last exchange")
+            clear = gr.Button("Clear history")
         
         system = gr.Textbox(value="System", lines=1, label="System's name")
         user = gr.Textbox(value="User", lines=1, label="Your name")
@@ -94,6 +112,9 @@ if __name__ == "__main__":
         submit.click(fn=generate,
             inputs=[inpt, system, user, ai, max_new_tokens],
             outputs=display)
+        history_prune.click(fn=prune_history_gradio, outputs=display)
+        remove_last_exchange.click(fn=remove_last_exchange_gradio, outputs=display)
+        clear.click(fn=clear_history, outputs=display)
     
     interface.queue()
     interface.launch()
