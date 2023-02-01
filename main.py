@@ -11,7 +11,7 @@ import os
 
 def generate_prelude(system: str, sep: str, system1="Assistant is a distilled language model trained by the community.", system2="", prelude="quality: high"):
     """
-        Generates prelude. Defaults do not mimick OpenAI completely. `system1` is official prefix, `system2` is additional prefix.
+        Generates prelude. Defaults do not mimick OpenAI completely. `system1` is official context (?, the term for prelude+system1 is official prefix), `system2` is additional context.
     """
     return f"{prelude}\n\n[{system}]\n{system1}{sep}\n\n[{system}]\n{system2}{sep}\n\n"
 
